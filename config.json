@@ -1,0 +1,167 @@
+{
+  "camera": {
+    "resolution": [1920, 1080],
+    "fps": 30.0,
+    "pixels_per_meter": 22.0
+  },
+  "intersection_box": [
+    [480, 360],
+    [1650, 350],
+    [1850, 800],
+    [420, 820]
+  ],
+  "road_polygon": [
+    [200, 0],
+    [1800, 0],
+    [1920, 350],
+    [1920, 1080],
+    [0, 1080],
+    [0, 350]
+  ],
+  "lanes": [
+    {
+      "id": "lane_downhill_main",
+      "name": "Main Avenue - Downhill Lane",
+      "polygon": [
+        [300, 100],
+        [1000, 100],
+        [1600, 800],
+        [800, 800]
+      ],
+      "flow_vector": [0.85, 0.52],
+      "allowed_movements": ["straight", "right"],
+      "speed_limit_kmh": 60.0
+    },
+    {
+      "id": "lane_uphill_main",
+      "name": "Main Avenue - Uphill Lane",
+      "polygon": [
+        [1000, 100],
+        [1600, 100],
+        [1920, 800],
+        [1600, 800]
+      ],
+      "flow_vector": [-0.85, -0.52],
+      "allowed_movements": ["straight", "left"],
+      "speed_limit_kmh": 60.0
+    },
+    {
+      "id": "lane_side_cross",
+      "name": "Side Street Approach",
+      "polygon": [
+        [0, 450],
+        [600, 450],
+        [600, 850],
+        [0, 850]
+      ],
+      "flow_vector": [1.0, 0.0],
+      "allowed_movements": ["straight", "left", "right"],
+      "speed_limit_kmh": 40.0
+    }
+  ],
+  "stop_lines": [
+    {
+      "id": "stop_line_downhill",
+      "name": "Main Avenue Downhill Stop Line",
+      "points": [[250, 480], [750, 470]],
+      "associated_traffic_light": "tl_gantry",
+      "flow_direction": [0.85, 0.52]
+    },
+    {
+      "id": "stop_line_uphill",
+      "name": "Main Avenue Uphill Stop Line",
+      "points": [[1050, 470], [1550, 460]],
+      "associated_traffic_light": "tl_island",
+      "flow_direction": [-0.85, -0.52]
+    }
+  ],
+  "zebra_crossings": [
+    {
+      "id": "zebra_right_main",
+      "name": "Right Main Pedestrian Crossing",
+      "polygon": [
+        [1020, 480],
+        [1580, 470],
+        [1680, 560],
+        [1100, 570]
+      ]
+    },
+    {
+      "id": "zebra_left_side",
+      "name": "Left Side Pedestrian Crossing",
+      "polygon": [
+        [180, 510],
+        [580, 500],
+        [600, 570],
+        [200, 580]
+      ]
+    },
+    {
+      "id": "zebra_bottom_island",
+      "name": "Bottom Island Pedestrian Crossing",
+      "polygon": [
+        [60, 720],
+        [460, 720],
+        [460, 990],
+        [60, 990]
+      ]
+    }
+  ],
+  "solid_lines": [
+    {
+      "id": "solid_divider_center",
+      "name": "Center Road Divider",
+      "points": [[1000, 100], [1500, 750]]
+    }
+  ],
+  "traffic_lights": [
+    {
+      "id": "tl_gantry",
+      "name": "Overhead Gantry Signal",
+      "bbox": [710, 240, 760, 310],
+      "default_initial_state": "RED",
+      "cycle_red_s": 15.0,
+      "cycle_green_s": 25.0,
+      "cycle_yellow_s": 3.0
+    },
+    {
+      "id": "tl_island",
+      "name": "Right Island Signal",
+      "bbox": [1110, 340, 1160, 410],
+      "default_initial_state": "GREEN",
+      "cycle_red_s": 25.0,
+      "cycle_green_s": 15.0,
+      "cycle_yellow_s": 3.0
+    }
+  ],
+  "thresholds": {
+    "stopped_vehicle_duration_s": 10.0,
+    "stopped_vehicle_speed_kmh": 2.5,
+    "ttc_near_miss_s": 1.5,
+    "accident_speed_drop_ratio": 0.70,
+    "accident_min_decel_ms2": 6.0,
+    "accident_post_stop_s": 2.0,
+    "congestion_speed_threshold_kmh": 5.0,
+    "congestion_min_lanes": 2,
+    "congestion_min_duration_s": 5.0,
+    "u_turn_angle_deg": 135.0,
+    "wrong_way_dot_thresh": -0.45,
+    "wrong_way_min_distance_px": 50.0,
+    "failure_to_yield_distance_px": 120.0,
+    "jaywalking_min_duration_s": 1.2,
+    "solid_line_cross_dist_px": 12.0,
+    "road_obstacle_stationary_s": 3.5,
+    "fire_smoke_min_contour_area": 400.0,
+    "fire_smoke_min_frames": 10
+  },
+  "risk_engine": {
+    "lookahead_s": 5.0,
+    "weights": {
+      "ttc": 0.40,
+      "deceleration": 0.25,
+      "density": 0.20,
+      "conflict_angle": 0.15
+    },
+    "smoothing_factor": 0.20
+  }
+}

@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Videos and data
+*.mp4
+*.avi
+events.csv
+events.json
+snapshots/
+yolov8n.pt
+
+# Virtual environments
+venv/
+env/
+.env
+.venv/
