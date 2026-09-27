@@ -697,6 +697,12 @@ def main() -> None:
         st.success(f"✅ Demo video saved: {demo_path}")
         st.info("Refresh and upload the demo video to run analysis.")
 
+    if "events" not in st.session_state:
+        st.session_state["events"]    = []
+        st.session_state["out_video"] = None
+        st.session_state["snapshots"] = []
+        st.session_state["current_video_name"] = None
+
     if uploaded is None:
         st.markdown(
             """
@@ -717,22 +723,57 @@ def main() -> None:
         )
         return
 
-    # ── Save upload to temp file ──────────────────────────────────────────
-    with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
-        tmp.write(uploaded.read())
-        tmp_path = tmp.name
+    # Check if this is a new video replacing an already analyzed old video
+    is_new_video = False
+    if st.session_state["current_video_name"] is not None and st.session_state["current_video_name"] != uploaded.name:
+        is_new_video = True
 
     # ── Run analysis ──────────────────────────────────────────────────────
     run_col, _ = st.columns([1, 3])
     with run_col:
         run_btn = st.button("🚀 Run Analysis", type="primary", use_container_width=True)
 
-    if "events" not in st.session_state:
-        st.session_state["events"]    = []
-        st.session_state["out_video"] = None
-        st.session_state["snapshots"] = []
+    if is_new_video and run_btn:
+        st.session_state["confirm_new_video"] = True
 
-    if run_btn:
+    if st.session_state.get("confirm_new_video", False):
+        st.warning("⚠️ Yangi video yukladingiz. Eski videoning barcha tahlil natijalari (va rasmlar) o'chib ketadi. Davom etasizmi?")
+        col_ok, col_cancel = st.columns([1, 5])
+        with col_ok:
+            confirm_btn = st.button("Ha, tasdiqlayman", type="primary")
+        with col_cancel:
+            cancel_btn = st.button("Bekor qilish")
+            
+        if cancel_btn:
+            st.session_state["confirm_new_video"] = False
+            st.rerun()
+        if confirm_btn:
+            st.session_state["confirm_new_video"] = False
+            # Clear old state so we can run
+            st.session_state["events"]    = []
+            st.session_state["out_video"] = None
+            st.session_state["snapshots"] = []
+            st.session_state["current_video_name"] = uploaded.name
+            st.rerun()
+        return  # Stop execution until confirmed
+
+    if run_btn and not is_new_video:
+        # Directly run if it's the first video or same video
+        pass
+
+    if (run_btn and not is_new_video) or st.session_state.get("_force_run", False):
+        st.session_state["_force_run"] = False
+        # ── Save upload to temp file in chunks to prevent OOM ──
+        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+            while True:
+                chunk = uploaded.read(8 * 1024 * 1024)
+                if not chunk:
+                    break
+                tmp.write(chunk)
+            tmp_path = tmp.name
+
+        st.session_state["current_video_name"] = uploaded.name
+        
         progress_bar = st.progress(0)
         status_msg   = st.empty()
 
